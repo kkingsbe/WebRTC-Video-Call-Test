@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        const ROOM_ID = "<%= roomId %>"
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="script.js" defer></script>
+    <title>Document</title>
+    <style>
+        body {
+            background: rgb(15 23 42);
+            width: max-width;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 300px);
+            grid-auto-rows: 300px;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        #own-video {
+            position: absolute;
+            top: 1vw;
+            right: 1vw;
+            width: 15vh;
+            height: 15vh;
+        }
+
+        #caller-video {
+            height: 80vh;
+            width: 80vh;
+            border-radius: 10px;
+        }
+
+        #call-container {
+            position: relative;
+            width: fit-content;
+            height: fit-content;
+            border-radius: 10px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        #call-controls {
+            position: absolute;
+            width: 100%;
+            left: 0px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #mute {
+            padding: 5px;
+            background: rgba(0,0,0,0.5);
+            height: 30px;
+            width: 30px;
+            border-radius: 10px;
+            display: flex;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+        }
+
+        #mute img {
+            margin: auto;
+        }
+
+        #end-call {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: rgba(239, 68, 68, 0.9);
+            backdrop-filter: blur(2px);
+            color: white;
+            gap: 10px;
+            height: 40px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #end-call p {
+            margin: 0;
+        }
+
+        #call-controls img {
+            height: 20px;
+        }
+
+        .img-invert {
+            filter: invert(1);
+        }
+    </style>
+</head>
+<body>
+    <div id="call-container">
+        <div id="caller-video"></div>
+        <div id="own-video"></div>
+        <div id="call-controls">
+            <div id="mute">
+                <img src="./assets/muted.png"/>
+            </div>
+            <div id="end-call">
+                <img src="./assets/telephone.png" class="img-invert"/>
+                <p>Leave</p>
+            </div>
+        </div>
+    </div>
+    <div id="video-grid"></div>
+</body>
+</html>
