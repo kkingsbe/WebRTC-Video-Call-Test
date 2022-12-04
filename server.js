@@ -1,8 +1,18 @@
 const express = require('express')
+const fs = require('fs')
+const {fstat} = fs
 const app = express()
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const https = require('https')
 const {v4: uuidV4} = require('uuid')
+
+var options = {
+    key: fstat.readFileSync("./file.pem"),
+    cert: fstat.readFileSync("./file.crt")
+}
+var serverPort = 443
+
+var server = https.createServer(options, app)
+var io = require("socket.io")(server)
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -30,4 +40,4 @@ io.on('connection', socket => {
     })
 })
 
-server.listen(3000)
+server.listen(serverPort)

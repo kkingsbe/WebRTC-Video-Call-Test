@@ -8,7 +8,7 @@ export default function Home() {
   const ROOM_ID = 0
   useEffect(() => {
     if(typeof(document) != "undefined") {
-      const socket = io('https://ec2-35-173-200-68.compute-1.amazonaws.com:3000/')
+      const socket = io('https://ec2-35-173-200-68.compute-1.amazonaws.com/')
       import('peerjs').then(({ default: Peer }) => {
         const myPeer = new Peer(undefined, {
           host: 'ec2-35-173-200-68.compute-1.amazonaws.com',
