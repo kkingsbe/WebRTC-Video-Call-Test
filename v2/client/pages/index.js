@@ -47,7 +47,7 @@ export default function Home() {
         socket.on('user-connected', userId => {
             if(userId != myPeer.id) {
                 console.log("User connected: " + userId)
-                connectToNewUser(userId, stream)
+                connectToNewUser(myPeer, userId, stream)
             }
         })
     
@@ -85,7 +85,7 @@ export default function Home() {
     //videoGrid.append(video)
   }
 
-  function connectToNewUser(userId, stream) {
+  function connectToNewUser(myPeer, userId, stream) {
     const call = myPeer.call(userId, stream)
     console.log("Callin'")
     const video = document.createElement('video')
