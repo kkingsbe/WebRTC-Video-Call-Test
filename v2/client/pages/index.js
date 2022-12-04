@@ -12,7 +12,8 @@ export default function Home() {
       import('peerjs').then(({ default: Peer }) => {
         const myPeer = new Peer(undefined, {
           host: 'ec2-35-173-200-68.compute-1.amazonaws.com',
-          port: '3001'
+          port: '3001',
+          secure: false
         })
         
         myPeer.on('open', id => {
