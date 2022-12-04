@@ -6,59 +6,66 @@ const { io } = require("socket.io-client");
 
 export default function Home() {
   const ROOM_ID = 0
-  useEffect(() => {
-    if(typeof(document) != "undefined") {
-      const socket = io.connect('https://ml360-testing.dev:443')
-      import('peerjs').then(({ default: Peer }) => {
-        const myPeer = new Peer(undefined, {
-          host: 'ml360-testing.dev',
-          port: '3001',
-        })
+  const SERVER_URL = "ml360-testing.dev"
+
+  function init() {
+    const socket = io.connect(`https://${SERVER_URL}:443`)
+    import('peerjs').then(({ default: Peer }) => {
+      const myPeer = new Peer(undefined, {
+        host: SERVER_URL,
+        port: '3001',
+      })
+      
+      myPeer.on('open', id => {
+        console.log("MY ID IS " + id)
+        socket.emit('join-room', ROOM_ID, id)
+      })
+
+      navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      }).then(stream => {
+        addVideoStream(myVideo, stream, true)
         
         myPeer.on('open', id => {
-          console.log("MY ID IS " + id)
+          socket.emit('join-room', ROOM_ID, id)
         })
-  
-        navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true
-        }).then(stream => {
-          addVideoStream(myVideo, stream, true)
-          
-          myPeer.on('open', id => {
-            socket.emit('join-room', ROOM_ID, id)
-          })
-      
-          myPeer.on('call', call => {
-              console.log("Getting a call")
-              call.answer(stream)
-              const video = document.createElement('video')
-              call.on('stream', userVideoStream => {
-                  addVideoStream(video, userVideoStream, false)
-              })
-              call.on('close', () => {
-                  video.remove()
-              })
-              peers[call.peer] = call
-          })
-      
-          socket.on('user-connected', userId => {
-              if(userId != myPeer.id) {
-                  console.log("User connected: " + userId)
-                  connectToNewUser(userId, stream)
-              }
-          })
-      
-          socket.emit('connection-request', ROOM_ID, myPeer.id)
+    
+        myPeer.on('call', call => {
+            console.log("Getting a call")
+            call.answer(stream)
+            const video = document.createElement('video')
+            call.on('stream', userVideoStream => {
+                addVideoStream(video, userVideoStream, false)
+            })
+            call.on('close', () => {
+                video.remove()
+            })
+            peers[call.peer] = call
         })
-      });
-  
-      socket.on('user-disconnected', userId => {
-        if(peers[userId]) peers[userId].close()
+    
+        socket.on('user-connected', userId => {
+            if(userId != myPeer.id) {
+                console.log("User connected: " + userId)
+                connectToNewUser(userId, stream)
+            }
+        })
+    
+        socket.emit('connection-request', ROOM_ID, myPeer.id)
       })
-  
-      const myVideo = document.createElement('video')
-      myVideo.muted = true
+    });
+
+    socket.on('user-disconnected', userId => {
+      if(peers[userId]) peers[userId].close()
+    })
+
+    const myVideo = document.createElement('video')
+    myVideo.muted = true
+  }
+
+  useEffect(() => {
+    if(typeof(document) != "undefined") {
+      init()
     }
   }, [])
 
