@@ -8,10 +8,10 @@ export default function Home() {
   const ROOM_ID = 0
   useEffect(() => {
     if(typeof(document) != "undefined") {
-      const socket = io('https://ec2-35-173-200-68.compute-1.amazonaws.com/')
+      const socket = io.connect('https://ml360-testing.dev:443')
       import('peerjs').then(({ default: Peer }) => {
         const myPeer = new Peer(undefined, {
-          host: 'ec2-35-173-200-68.compute-1.amazonaws.com',
+          host: 'ml360-testing.dev',
           port: '3001',
         })
         

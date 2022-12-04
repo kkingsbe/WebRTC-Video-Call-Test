@@ -1,13 +1,22 @@
 const express = require('express')
 const app = express()
-const server = require('http').Server(app)
-const io = require('socket.io')(server, {
+const fs = require('fs')
+const https = require('https')
+const {PeerServer} = require("peer")
+
+const key = fs.readFileSync("/etc/letsencrypt/live/ml360-testing.dev/privkey.pem")
+const cert = fs.readFileSync("/etc/letsencrypt/live/ml360-testing.dev/fullchain.pem")
+
+var options = {key, cert}
+var serverPort = 443
+
+var server = https.createServer(options, app)
+var io = require("socket.io")(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
     }
 })
-const {v4: uuidV4} = require('uuid')
 
 io.on('connection', socket => {
     console.log("New connection!!!!!!!!!")
@@ -25,4 +34,12 @@ io.on('connection', socket => {
     })
 })
 
-server.listen(3000)
+server.listen(serverPort)
+
+const peerServer = PeerServer({
+    port: 3001,
+    ssl: {
+        key,
+        cert
+    }
+})
